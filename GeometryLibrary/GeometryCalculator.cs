@@ -13,7 +13,7 @@
 
     public class Circle : Shape
     {
-        private double radius;
+        private readonly double radius;
 
         public Circle(double radius)
         {
@@ -33,9 +33,9 @@
 
     public class Triangle : Shape
     {
-        private double sideA;
-        private double sideB;
-        private double sideC;
+        private readonly double sideA;
+        private readonly double sideB;
+        private readonly double sideC;
 
         public Triangle(double sideA, double sideB, double sideC)
         {
@@ -63,6 +63,15 @@
         {
             return sideC;
         }
+        public bool IsRightTriangle()
+        {
+            // Проверка на прямоугольность треугольника по теореме Пифагора
+            double aSquare = sideA * sideA;
+            double bSquare = sideB * sideB;
+            double cSquare = sideC * sideC;
+
+            return (aSquare + bSquare == cSquare) || (aSquare + cSquare == bSquare) || (bSquare + cSquare == aSquare);
+        }
     }
 
     public class AreaVisitor : IShapeVisitor
@@ -84,20 +93,23 @@
             return Math.Sqrt(semiPerimeter * (semiPerimeter - sideA) * (semiPerimeter - sideB) * (semiPerimeter - sideC));
         }
     }
-    class Program
+
+    public class GeometryCalculator
     {
         static void Main(string[] args)
         {
-            Circle circle = new Circle(5);
-            Triangle triangle = new Triangle(3, 4, 5);
+            Circle circle = new(5);
+            Triangle triangle = new(3, 4, 5);
 
-            AreaVisitor areaVisitor = new AreaVisitor();
+            AreaVisitor areaVisitor = new();
 
             double circleArea = circle.Accept(areaVisitor);
             double triangleArea = triangle.Accept(areaVisitor);
+            bool isRightTriangle = triangle.IsRightTriangle();
 
             Console.WriteLine("Circle area: " + circleArea);
             Console.WriteLine("Triangle area: " + triangleArea);
+            Console.WriteLine("Triangle is right: " + isRightTriangle);
 
             Console.ReadKey();
         }
